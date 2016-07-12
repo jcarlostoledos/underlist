@@ -50,8 +50,6 @@ app.post(endpoint + '/register', function(req, res) {
    var username = req.body.username;
    var name = req.body.name;
 
-   var test = 0;
-
    var data = {
       "error":1,
       "message":""

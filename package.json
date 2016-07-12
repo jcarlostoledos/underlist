@@ -1,0 +1,17 @@
+{
+  "name": "underlist",
+  "version": "1.0.0",
+  "description": "Underlist TODO list",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Juan Carlos Toledo Stávoli",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "moment": "^2.14.1",
+    "mysql": "^2.11.1"
+  }
+}

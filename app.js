@@ -89,10 +89,10 @@ app.post(endpoint + '/register', function(req, res) {
    if(!!username && !!name) {
 
       //Check username using twitter standard
-      // # Start of the line
-      // # Match characters and symbols in the list, a-z, 0-9, underscore, hyphen
-      // # Length at least 3 characters and maximum length of 15
-      // # End of the line
+      // 1. Start of the line
+      // 2. Match characters and symbols in the list, a-z, 0-9, underscore, hyphen
+      // 3. Length at least 3 characters and maximum length of 15
+      // 4. End of the line
       if(/^[a-z0-9_-]{3,15}$/.test(username)){
 
          connection.query("SELECT * FROM Users WHERE Users.username = ?", [username], function(err, rows, fields){
@@ -448,13 +448,17 @@ app.put(endpoint + '/task/:id/done', function(req, res) {
       if(!!id){
           connection.query("UPDATE Tasks SET Tasks.done=1 WHERE Tasks.id=?",
                            [id],
-                           function(err, results){
+                           function(err, result){
               if(!!err) {
                   data.message = "Error updating task " + id;
                   data.debug = err;
                   res.json(data);
               }
-              else{
+              else if(result.affectedRows === 0) {
+                  data.message = "Error updating task " + id + ", NO ROWS have been affected";
+                  res.json(data);
+              }
+              else {
                   data.error = false;
                   data.message = "Updated task " + id + " successfully";
                   res.json(data);
@@ -480,13 +484,17 @@ app.put(endpoint + '/task/:id/undone', function(req, res) {
       if(!!id){
           connection.query("UPDATE Tasks SET Tasks.done=0 WHERE Tasks.id=?",
                            [id],
-                           function(err, results){
+                           function(err, result){
               if(!!err) {
                   data.message = "Error updating task " + id;
                   data.debug = err;
                   res.json(data);
               }
-              else{
+              else if(result.affectedRows === 0) {
+                  data.message = "Error updating task " + id + ", NO ROWS have been affected";
+                  res.json(data);
+              }
+              else {
                   data.error = false;
                   data.message = "Updated task " + id + " successfully";
                   res.json(data);

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="6dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="6dp"
+    android:background="@color/colorCustomLightGray"
+    android:elevation="3dp"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.94">
+
+        <TextView
+            android:id="@+id/list_name_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:textColor="@color/colorPrimary" />
+
+        <EditText
+            android:id="@+id/list_name_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimary"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+
+    <ImageView
+        android:id="@+id/finishedEdit_iv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.06"
+        android:src="@drawable/check"
+        android:adjustViewBounds="true"
+        android:layout_gravity="center_vertical|end"
+        android:visibility="gone"
+        />
+
+</LinearLayout>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="underdog.underlist.MainActivity"
+    android:background="@android:color/white"
+    >
+
+    <ImageView
+        android:id="@+id/background_iv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        />
+
+
+
+    <Button
+        android:id="@+id/register_bt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/register"
+        android:background="@color/colorPrimary"
+        android:layout_margin="16dp"
+        android:layout_alignParentBottom="true"
+        android:textColor="@android:color/white"
+        />
+
+    <FrameLayout
+        android:id="@+id/fragment_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/register_bt"
+        >
+    </FrameLayout>
+
+
+</RelativeLayout>

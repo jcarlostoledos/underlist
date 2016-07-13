@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">underlist</string>
+    <string name="base_url">http://192.168.11.17:8088/api/v0.1/</string>
+    <string name="username">Usuario</string>
+    <string name="name">Nombre</string>
+    <string name="login">Iniciar Sesión</string>
+    <string name="register">Registrar</string>
+    <string name="underlist_iv">underlist logo</string>
+    <string name="back">Regresar</string>
+    <string name="addTask">Añadir Tarea</string>
+    <string name="addList">Añadir Lista</string>
+    <string name="date">Fecha</string>
+    <string name="title">Título</string>
+    <string name="description">Descripción</string>
+    <string name="done">Guardar</string>
+</resources>

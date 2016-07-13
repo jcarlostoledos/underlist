@@ -51,6 +51,11 @@ var connection = mysql.createConnection({
 //App configuration
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 
 //1. Login endpoint - POST
 app.post(endpoint + '/login', function(req, res){

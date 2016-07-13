@@ -7,8 +7,7 @@ var DBPassword =  '';
 var DBName =      'underlist';
 
 //routing namespace
-var endpoint =    "api/" + AppBuild + "/";
-endpoint = "";
+var endpoint =    "/api/" + AppBuild;
 
 var app =         require('express')();
 var http =        require('http').Server(app);
@@ -64,7 +63,11 @@ app.post(endpoint + '/register', function(req, res) {
    if(!!username && !!name) {
 
       //Check username using twitter standard
-      if(/^@?(\w){1,15}$/.test(username)){
+      // # Start of the line
+      // # Match characters and symbols in the list, a-z, 0-9, underscore, hyphen
+      // # Length at least 3 characters and maximum length of 15
+      // # End of the line
+      if(/^[a-z0-9_-]{3,15}$/.test(username)){
 
          connection.query("SELECT * FROM Users WHERE Users.username = ?", [username], function(err, rows, fields){
 
@@ -108,18 +111,18 @@ app.get(endpoint + '/user/:id/list/',function(req,res){
         "error": true
     };
 
-    connection.query("SELECT * from Lists WHERE Lists.userid = ?",
+    connection.query("SELECT * FROM Lists WHERE Lists.user_id = ?",
                      [userId],
                      function(err, rows, fields) {
 
         if(rows.length > 0){
             data.error = false;
-            data.tasks = rows;
+            data.lists = rows;
             res.json(data);
         }
         else{
             data.message = 'No lists found';
-            data.tasks = [];
+            data.lists = [];
             res.json(data);
         }
     });
@@ -233,12 +236,14 @@ app.get(endpoint + '/user/:id/task/',function(req,res){
                      [userId],
                      function(err, rows, fields) {
 
-        if(rows.length > 0){
+        if(rows.length > 0) {
             data.error = false;
             data.tasks = rows;
             res.json(data);
-        }else{
-            data.tasks = 'No tasks found';
+        }
+        else {
+            data.message = "No tasks found";
+            data.tasks = [];
             res.json(data);
         }
     });
@@ -262,8 +267,10 @@ app.get(endpoint + '/user/:id/list/:listId/task/',function(req,res){
             data.error = false;
             data.tasks = rows;
             res.json(data);
-        }else{
-            data.tasks = 'No tasks found';
+        }
+        else {
+            data.message = "No tasks found";
+            data.tasks = [];
             res.json(data);
         }
     });
@@ -455,5 +462,5 @@ app.get('/', function(req, res){
 });
 
 app.listen(AppPort, function () {
-  console.log('Running server on port: ' + AppPort);
+  console.log('Running underlist('+ AppBuild +') on port: ' + AppPort);
 });

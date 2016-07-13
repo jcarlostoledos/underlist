@@ -7,7 +7,7 @@
 #
 # Host: 127.0.0.1 (MySQL 5.6.16)
 # Database: underlist
-# Generation Time: 2016-07-13 08:32:14 +0000
+# Generation Time: 2016-07-13 13:09:03 +0000
 # ************************************************************
 
 
@@ -70,9 +70,7 @@ LOCK TABLES `Tasks` WRITE;
 
 INSERT INTO `Tasks` (`id`, `title`, `description`, `created_date`, `due_date`, `done`, `list_id`)
 VALUES
-	(39,'titulo','esta es una descripcion','2000-01-01 00:00:00','2000-01-01 00:00:00',b'0',3),
-	(40,'titulo','esta es una descripcion','2000-01-01 00:00:00','2000-01-01 00:00:00',b'0',3),
-	(42,'titulo','esta es una descripcion','2000-01-01 00:00:00','2000-01-01 00:00:00',b'0',3);
+	(39,'titulo','esta es una descripcion','2000-01-01 00:00:00','2000-01-01 00:00:00',b'0',3);
 
 /*!40000 ALTER TABLE `Tasks` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -122,9 +120,7 @@ LOCK TABLES `UserTasks` WRITE;
 
 INSERT INTO `UserTasks` (`id`, `user_id`, `task_id`)
 VALUES
-	(26,1,39),
-	(27,1,40),
-	(28,1,42);
+	(26,1,39);
 
 /*!40000 ALTER TABLE `UserTasks` ENABLE KEYS */;
 UNLOCK TABLES;

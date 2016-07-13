@@ -14,27 +14,31 @@ var app = require('express')();
 var http = require('http').Server(app);
 var mysql = require('mysql');
 var bodyParser = require("body-parser");
+
+//DB configuration
 var connection = mysql.createConnection({
     host : DBHost,
     user : DBUser,
     password : DBPassword,
     database : DBName,
 });
+
+//App configuration
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+//Login endpoint - POST
 app.post(endpoint + '/login', function(req, res){
 
    var username = req.body.username;
    console.log("LOGIN: " + username);
    var data = {
-      "error":1,
-      "user":"",
+      "error": true,
       "message":""
    };
    connection.query("SELECT * FROM Users WHERE Users.username = ?", [username],function(err, rows, fields){
       if(rows.length > 0){
-         data.error = 0;
+         data.error = false;
          data.user = rows;
          data.message = "Success";
          res.json(data);
@@ -45,17 +49,30 @@ app.post(endpoint + '/login', function(req, res){
    });
 });
 
+//Register endpoint - POST
 app.post(endpoint + '/register', function(req, res) {
 
    var username = req.body.username;
    var name = req.body.name;
 
    var data = {
-      "error":1,
-      "message":""
+      "error": true,
+      "message": ""
    };
 
    if(!!username && !!name) {
+
+      console.log("ATTEMPT: REGISTER CHECK");
+      connection.query("SELECT * FROM Users WHERE Users.username = ?", [username], function(err, rows, fields){
+
+         if(!!err) {
+            console.log("REGISTER-EXISTS: " + rows);
+         }
+         else {
+            console.log(err);
+         }
+      });
+
       connection.query("INSERT INTO Users (Users.username, Users.name) VALUES(?, ?)", [username, name], function(err, rows, fields){
 
          if(!!err) {
@@ -63,7 +80,7 @@ app.post(endpoint + '/register', function(req, res) {
             data.debug = err;
          }
          else {
-            data.error = 0;
+            data.error = false;
             data.message = "User " + username + " added succesfully";
          }
 
@@ -76,6 +93,7 @@ app.post(endpoint + '/register', function(req, res) {
    }
 });
 
+//Tasks endpoint - GET
 app.get(endpoint + '/tasks',function(req,res){
     var userId = req.body.user_id;
     var data = {

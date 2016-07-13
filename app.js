@@ -100,6 +100,127 @@ app.post(endpoint + '/register', function(req, res) {
    }
 });
 
+//Lists endpoint - GET
+app.get(endpoint + '/user/:id/list/',function(req,res){
+
+    var userId = req.params.id;
+    var data = {
+        "error": true
+    };
+
+    connection.query("SELECT * from Lists WHERE Lists.userid = ?",
+                     [userId],
+                     function(err, rows, fields) {
+
+        if(rows.length > 0){
+            data.error = false;
+            data.tasks = rows;
+            res.json(data);
+        }
+        else{
+            data.message = 'No lists found';
+            data.tasks = [];
+            res.json(data);
+        }
+    });
+});
+
+//Lists endpoint - POST
+app.post(endpoint + '/list',function(req, res) {
+
+    var title =       req.body.title;
+    var description = req.body.description;
+    var createdDate = req.body.createdDate;
+    var userId =      req.body.userId;
+
+    var data = {
+      "error": true
+    };
+
+    if(!!title && !!description && !!createdDate && !!userId) {
+        connection.query(
+                        "INSERT INTO Lists (Lists.title, Lists.description, Lists.created_date, Lists.user_id) VALUES(?, ?, ?, ?)",
+                        [title, description, createdDate, userId],
+                        function(err, result) {
+            if(!!err) {
+                data.message = "Error adding list " + title;
+                data.debug = err;
+                res.json(data);
+            }
+            else{
+                data.error = false;
+                data.message = "Added list " + result.insertId + " successfully";
+                res.json(data);
+            }
+        });
+    }
+    else {
+        data.message = "Please provide all required data";
+        res.json(data);
+    }
+});
+
+//Lists endpoint - PUT
+app.put(endpoint + '/list/:id',function(req, res) {
+
+    var id =            req.params.id;
+    var title =         req.body.title;
+    var description =   req.body.description;
+
+    var data = {
+      "error": true,
+    };
+
+    if(!!id && !!title && !!description){
+        connection.query("UPDATE Lists SET Lists.title=?, Lists.description=? WHERE Lists.id=?",
+                         [title, description, id],
+                         function(err, result){
+            if(!!err) {
+                data.message = "Error updating list " + id + " " + title + " " + description;
+                data.debug = err;
+                res.json(data);
+            }
+            else{
+                data.error = false;
+                data.message = "Updated list " + id + " successfully";
+                res.json(data);
+            }
+        });
+    }
+    else {
+        data.message = "Please provide all required data";
+        res.json(data);
+    }
+});
+
+//Lists endpoint - DELETE
+app.delete(endpoint + '/list/:id', function(req, res){
+    var id = req.params.id;
+
+    var data = {
+        "error": true,
+    };
+
+    if(!!id){
+        connection.query("DELETE FROM Lists WHERE Lists.id=?",[id] ,function(err, rows) {
+            if(!!err) {
+                data.message = "Error deleting list " + id;
+                data.debug = err;
+                res.json(data);
+            }
+            else {
+               data.error = false;
+               data.message = "Deleted list " + id + " successfully";
+               res.json(data);
+            }
+        });
+    }
+    else {
+        data.message = "Please provide all required data (i.e : id )";
+        res.json(data);
+    }
+});
+
 //Tasks endpoint - GET
 app.get(endpoint + '/user/:id/task/',function(req,res){
 
@@ -123,6 +244,31 @@ app.get(endpoint + '/user/:id/task/',function(req,res){
     });
 });
 
+//Tasks endpoint with List filter - GET
+app.get(endpoint + '/user/:id/list/:listId/task/',function(req,res){
+
+    var userId = req.params.id;
+    var listId = req.params.listId;
+
+    var data = {
+        "error": true
+    };
+
+    connection.query("SELECT * from Tasks, UserTasks WHERE UserTasks.user_id = ? AND UserTasks.task_id = Tasks.id AND Tasks.list_id = ?",
+                     [userId, listId],
+                     function(err, rows, fields) {
+
+        if(rows.length > 0){
+            data.error = false;
+            data.tasks = rows;
+            res.json(data);
+        }else{
+            data.tasks = 'No tasks found';
+            res.json(data);
+        }
+    });
+});
+
 //Tasks endpoint - POST
 app.post(endpoint + '/task',function(req, res) {
 
@@ -131,15 +277,16 @@ app.post(endpoint + '/task',function(req, res) {
     var createdDate = req.body.createdDate;
     var dueDate =     req.body.dueDate;
     var userId =      req.body.userId;
+    var listId =      req.body.listId;
 
     var data = {
       "error": true
     };
 
-    if(!!title && !!description && !!createdDate && !!dueDate && !!userId) {
+    if(!!title && !!description && !!createdDate && !!dueDate && !!userId && !!listId) {
         connection.query(
-                        "INSERT INTO Tasks (Tasks.title, Tasks.description, Tasks.created_date, Tasks.due_date, Tasks.done) VALUES(?, ?, ?, ?, 0)",
-                        [title, description, createdDate, dueDate, userId],
+                        "INSERT INTO Tasks (Tasks.title, Tasks.description, Tasks.created_date, Tasks.due_date, Tasks.list_id, Tasks.done) VALUES(?, ?, ?, ?, ?, 0)",
+                        [title, description, createdDate, dueDate, listId],
                         function(err, result) {
 
              connection.query(

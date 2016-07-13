@@ -1,0 +1,120 @@
+
+
+/* ==========================================================================
+   Author's Alejandro Sansor
+   ========================================================================== */
+body {
+	margin-top: 100px;
+	padding-bottom: 20px;
+	background: url('../img/mexico_city.jpg') fixed;
+  background-size: cover;
+}
+
+form {
+    width: 250px;
+    margin: 0 auto;
+}
+
+form.login input[type="text"], form.login input[type="password"] {
+    width: 100%;
+    margin: 0;
+    padding: 5px 10px;
+    background: 0;
+    border: 0;
+    border-bottom: 1px solid #000;
+    outline: 0;
+    font-style: italic;
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+    color: #000;
+    font-weight: bold;
+    outline: 0;
+    margin-bottom: 10px;
+}
+
+form.login input[type="text"]:focus, form.login input[type="password"]:focus {
+    border-bottom: 2px solid #000;
+}
+
+form.login input[type="submit"] {
+    width: 100%;
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-top: 16px;
+    outline: 0;
+    cursor: pointer;
+    letter-spacing: 1px;
+}
+
+form.login input[type="submit"]:hover {
+    transition: background-color 0.5s ease;
+}
+
+form.login .register {
+    float: left;
+    width: 100%;
+    margin: 10px 0 0 0;
+}
+
+form.login label, form.login a {
+    font-size: 12px;
+    font-weight: 400;
+    color: #FFFFFF;
+}
+
+form.login a {
+    transition: color 0.5s ease;
+}
+
+form.login a:hover {
+    color: #2ecc71;
+}
+
+.btn-circle {
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 12px;
+  line-height: 1.428571429;
+  border-radius: 15px;
+}
+.btn-circle.btn-lg {
+  width: 60px;
+  height: 60px;
+  padding: 10px 16px;
+  font-size: 18px;
+  line-height: 1.33;
+  border-radius: 35px;
+  border: none;
+  position: relative;
+  top: 35px;
+  background-color: #000;
+}
+.panel-default{
+	width: 310px;
+	margin: 0 auto;
+	border-radius: 0;
+	opacity: 0.8;
+}
+.glyphicon-ok{
+	color: #FFF;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

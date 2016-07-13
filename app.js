@@ -373,7 +373,7 @@ app.post(endpoint + '/task',function(req, res) {
                                   data.debug = err;
                                   res.json(data);
                               }
-                              else{
+                              else {
                                   data.error = false;
                                   data.message = "Task " + title + " added succesfully";
                                   res.json(data);
@@ -421,7 +421,7 @@ app.put(endpoint + '/task/:id',function(req, res) {
                 data.message = "Error updating task " + id + " " + title + " " + description + " " + dueDate + ", NO ROWS have been affected";
                 res.json(data);
             }
-            else{
+            else {
                 data.error = false;
                 data.message = "Updated task " + id + " successfully";
                 res.json(data);

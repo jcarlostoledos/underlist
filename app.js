@@ -39,6 +39,7 @@ var app =         require('express')();
 var http =        require('http').Server(app);
 var mysql =       require('mysql');
 var bodyParser =  require("body-parser");
+var moment =      require('moment');
 
 //DB connection
 var connection = mysql.createConnection({
@@ -60,7 +61,8 @@ app.use(function(req, res, next) {
 //1. Login endpoint - POST
 app.post(endpoint + '/login', function(req, res){
 
-   console.log("Login attempt");
+   var currentDate = moment().format();
+   console.log(currentDate + ": Login attempt");
 
    var username = req.body.username;
 
@@ -86,7 +88,8 @@ app.post(endpoint + '/login', function(req, res){
 //2. Register endpoint - POST
 app.post(endpoint + '/register', function(req, res) {
 
-   console.log("Register attempt");
+   var currentDate = moment().format();
+   console.log(currentDate + ": Register attempt");
 
    var username = req.body.username;
    var name =     req.body.name;
@@ -141,6 +144,9 @@ app.post(endpoint + '/register', function(req, res) {
 //3. Lists endpoint - GET
 app.get(endpoint + '/user/:id/list/',function(req,res){
 
+   var currentDate = moment().format();
+   console.log(currentDate + ": List GET request attempt");
+
     var userId = req.params.id;
     var data = {
         "error": true
@@ -165,6 +171,9 @@ app.get(endpoint + '/user/:id/list/',function(req,res){
 
 //4. Lists endpoint - POST
 app.post(endpoint + '/list',function(req, res) {
+
+    var currentDate = moment().format();
+    console.log(currentDate + ": List POST request attempt");
 
     var title =       req.body.title;
     var description = req.body.description;
@@ -201,6 +210,9 @@ app.post(endpoint + '/list',function(req, res) {
 
 //5. Lists endpoint - PUT
 app.put(endpoint + '/list/:id',function(req, res) {
+
+    var currentDate = moment().format();
+    console.log(currentDate + ": List PUT request attempt");
 
     var id =            req.params.id;
     var title =         req.body.title;
@@ -239,6 +251,10 @@ app.put(endpoint + '/list/:id',function(req, res) {
 
 //6. Lists endpoint - DELETE
 app.delete(endpoint + '/list/:id', function(req, res){
+
+    var currentDate = moment().format();
+    console.log(currentDate + ": List DELETE request attempt");
+
     var id = req.params.id;
 
     var data = {
@@ -269,6 +285,9 @@ app.delete(endpoint + '/list/:id', function(req, res){
 //7. Tasks endpoint - GET
 app.get(endpoint + '/user/:id/task/',function(req,res){
 
+    var currentDate = moment().format();
+    console.log(currentDate + ": Task GET request attempt");
+
     var userId = req.params.id;
     var data = {
         "error": true
@@ -293,6 +312,9 @@ app.get(endpoint + '/user/:id/task/',function(req,res){
 
 //8. Tasks endpoint with List filter - GET
 app.get(endpoint + '/user/:id/list/:listId/task/',function(req,res){
+
+    var currentDate = moment().format();
+    console.log(currentDate + ": Task GET request attempt");
 
     var userId = req.params.id;
     var listId = req.params.listId;
@@ -320,6 +342,9 @@ app.get(endpoint + '/user/:id/list/:listId/task/',function(req,res){
 
 //9. Tasks endpoint - POST
 app.post(endpoint + '/task',function(req, res) {
+
+    var currentDate = moment().format();
+    console.log(currentDate + ": Task POST request attempt");
 
     var title =       req.body.title;
     var description = req.body.description;
@@ -370,6 +395,9 @@ app.post(endpoint + '/task',function(req, res) {
 //10. Tasks endpoint - PUT
 app.put(endpoint + '/task/:id',function(req, res) {
 
+    var currentDate = moment().format();
+    console.log(currentDate + ": Task PUT request attempt");
+
     var id =            req.params.id;
     var title =         req.body.title;
     var description =   req.body.description;
@@ -408,6 +436,10 @@ app.put(endpoint + '/task/:id',function(req, res) {
 
 //11. Tasks endpoint - DELETE
 app.delete(endpoint + '/task/:id', function(req, res){
+
+    var currentDate = moment().format();
+    console.log(currentDate + ": Task DELETE request attempt");
+
     var id = req.params.id;
 
     var data = {
@@ -447,6 +479,9 @@ app.delete(endpoint + '/task/:id', function(req, res){
 //12. Tasks activate endpoint - PUT
 app.put(endpoint + '/task/:id/done', function(req, res) {
 
+      var currentDate = moment().format();
+      console.log(currentDate + ": Task PUT request attempt");
+
       var id = req.params.id;
 
       var data = {
@@ -482,6 +517,9 @@ app.put(endpoint + '/task/:id/done', function(req, res) {
 
 //13. Tasks deactivate endpoint - PUT
 app.put(endpoint + '/task/:id/undone', function(req, res) {
+
+      var currentDate = moment().format();
+      console.log(currentDate + ": Task PUT request attempt");
 
       var id = req.params.id;
 
@@ -521,5 +559,6 @@ app.get('/', function(req, res){
 });
 
 app.listen(AppPort, function () {
-  console.log('Running underlist('+ AppBuild +') on port: ' + AppPort);
+   var currentDate = moment().format();
+   console.log(currentDate + ': Running underlist('+ AppBuild +') - port: ' + AppPort);
 });

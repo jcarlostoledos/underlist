@@ -1,24 +1,24 @@
 //server configuration
-var AppBuild = "v0.1";
-var AppPort = 8088;
-var DBHost = 'localhost';
-var DBUser = 'root';
-var DBPassword = '';
-var DBName = 'underlist';
+var AppBuild =    "v0.1";
+var AppPort =     8088;
+var DBHost =      'localhost';
+var DBUser =      'root';
+var DBPassword =  '';
+var DBName =      'underlist';
 
 //routing namespace
-var endpoint = "api/" + AppBuild + "/";
+var endpoint =    "api/" + AppBuild + "/";
 endpoint = "";
 
-var app = require('express')();
-var http = require('http').Server(app);
-var mysql = require('mysql');
-var bodyParser = require("body-parser");
+var app =         require('express')();
+var http =        require('http').Server(app);
+var mysql =       require('mysql');
+var bodyParser =  require("body-parser");
 
 //DB configuration
 var connection = mysql.createConnection({
-    host : DBHost,
-    user : DBUser,
+    host :     DBHost,
+    user :     DBUser,
     password : DBPassword,
     database : DBName,
 });
@@ -31,19 +31,21 @@ app.use(bodyParser.json());
 app.post(endpoint + '/login', function(req, res){
 
    var username = req.body.username;
-   console.log("LOGIN: " + username);
-   var data = {
-      "error": true,
-      "message":""
-   };
+
+   var data = {};
+
    connection.query("SELECT * FROM Users WHERE Users.username = ?", [username],function(err, rows, fields){
-      if(rows.length > 0){
-         data.error = false;
-         data.user = rows;
+
+      if(rows.length > 0) {
+         data.error =   false;
+         data.user =    rows;
          data.message = "Success";
          res.json(data);
       }
       else {
+
+         data.error =   true;
+         data.message = "That username is not valid";
          res.json(data);
       }
    });
@@ -53,9 +55,10 @@ app.post(endpoint + '/login', function(req, res){
 app.post(endpoint + '/register', function(req, res) {
 
    var username = req.body.username;
-   var name = req.body.name;
+   var name =     req.body.name;
 
    var data = {
+      "error": true
    };
 
    if(!!username && !!name) {
@@ -70,11 +73,11 @@ app.post(endpoint + '/register', function(req, res) {
                connection.query("INSERT INTO Users (Users.username, Users.name) VALUES(?, ?)", [username, name], function(err, rows, fields){
                   if(!!err) {
                      data.message = "Error adding user " + username;
-                     data.debug = err;
+                     data.debug =   err;
                      res.json(data);
                   }
                   else {
-                     data.error = false;
+                     data.error =   false;
                      data.message = "User " + username + " added succesfully";
                      res.json(data);
                   }
@@ -99,11 +102,9 @@ app.post(endpoint + '/register', function(req, res) {
 
 //Tasks endpoint - GET
 app.get(endpoint + '/tasks',function(req,res){
+
     var userId = req.body.user_id;
-    var data = {
-        "error":1,
-        "tasks":""
-    };
+    var data = {};
 
     connection.query("SELECT * from Tasks, UserTasks WHERE UserTasks.user_id = ?",[userId],function(err, rows, fields){
         if(rows.length !== 0){
@@ -117,26 +118,26 @@ app.get(endpoint + '/tasks',function(req,res){
     });
 });
 
-app.post(endpoint + '/task',function(req,res){
-    var title = req.body.title;
+app.post(endpoint + '/task',function(req, res) {
+
+    var title =       req.body.title;
     var description = req.body.description;
     var createdDate = req.body.createdDate;
-    var dueDate = req.body.dueDate;
-    var userId = req.body.userId;
-    var data = {
-        "error":1,
-        "tasks":""
-    };
+    var dueDate =     req.body.dueDate;
+    var userId =      req.body.userId;
+
+    var data = {};
+
     if(!!title && !!description && !!createdDate && !!dueDate && !!userId){
-      //   connection.query("INSERT INTO book VALUES('',?,?,?)",[Bookname,Authorname,Price],function(err, rows, fields){
-      //       if(!!err){
-      //           data["Books"] = "Error Adding data";
-      //       }else{
-      //           data["error"] = 0;
-      //           data["Books"] = "Book Added Successfully";
-      //       }
-      //       res.json(data);
-      //   });
+        connection.query("INSERT INTO Tasks (Tasks.title, Tasks.description, Tasks.created_date, Tasks.due_date, Tasks.user_id) VALUES(?,?,?,?)", [Bookname,Authorname,Price],function(err, rows, fields){
+            if(!!err){
+                data["Books"] = "Error Adding data";
+            }else{
+                data["error"] = 0;
+                data["Books"] = "Book Added Successfully";
+            }
+            res.json(data);
+        });
     }else{
       //   data["Books"] = "Please provide all required data (i.e : Bookname, Authorname, Price)";
       //   res.json(data);

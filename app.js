@@ -56,36 +56,40 @@ app.post(endpoint + '/register', function(req, res) {
    var name = req.body.name;
 
    var data = {
-      "error": true,
-      "message": ""
    };
 
    if(!!username && !!name) {
 
-      console.log("ATTEMPT: REGISTER CHECK");
-      connection.query("SELECT * FROM Users WHERE Users.username = ?", [username], function(err, rows, fields){
+      //Check username using twitter standard
+      if(/^@?(\w){1,15}$/.test(username)){
 
-         if(!!err) {
-            console.log("REGISTER-EXISTS: " + rows);
-         }
-         else {
-            console.log(err);
-         }
-      });
+         connection.query("SELECT * FROM Users WHERE Users.username = ?", [username], function(err, rows, fields){
 
-      connection.query("INSERT INTO Users (Users.username, Users.name) VALUES(?, ?)", [username, name], function(err, rows, fields){
-
-         if(!!err) {
-            data.message = "Error adding user " + username;
-            data.debug = err;
-         }
-         else {
-            data.error = false;
-            data.message = "User " + username + " added succesfully";
-         }
-
+            //Check if it is a unique username
+            if(rows.length === 0) {
+               connection.query("INSERT INTO Users (Users.username, Users.name) VALUES(?, ?)", [username, name], function(err, rows, fields){
+                  if(!!err) {
+                     data.message = "Error adding user " + username;
+                     data.debug = err;
+                     res.json(data);
+                  }
+                  else {
+                     data.error = false;
+                     data.message = "User " + username + " added succesfully";
+                     res.json(data);
+                  }
+               });
+            }
+            else {
+               data.message = "Username " + username + " already exists!";
+               res.json(data);
+            }
+         });
+      }
+      else {
+         data.message = "Not a valid username";
          res.json(data);
-      });
+      }
    }
    else {
       data.message = "Please provide all required data";

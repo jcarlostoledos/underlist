@@ -183,6 +183,10 @@ app.put(endpoint + '/list/:id',function(req, res) {
                 data.debug = err;
                 res.json(data);
             }
+            else if(result.affectedRows === 0) {
+                data.message = "Error updating list " + id + " " + title + " " + description + ", NO ROWS have been affected";
+                res.json(data);
+            }
             else{
                 data.error = false;
                 data.message = "Updated list " + id + " successfully";
@@ -343,6 +347,10 @@ app.put(endpoint + '/task/:id',function(req, res) {
             if(!!err) {
                 data.message = "Error updating task " + id + " " + title + " " + description + " " + dueDate;
                 data.debug = err;
+                res.json(data);
+            }
+            else if(result.affectedRows === 0) {
+                data.message = "Error updating task " + id + " " + title + " " + description + " " + dueDate + ", NO ROWS have been affected";
                 res.json(data);
             }
             else{

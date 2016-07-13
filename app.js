@@ -1,6 +1,32 @@
+//Developed by Juan Carlos Toledo
+//Underlist v0.1
+
+// Resources index:
+// 1. POST    - User (register)     /register
+// 2. POST    - User (login)        /login
+// 3. GET     - Lista               /lista
+// 4. POST    - Lista               /lista
+// 5. PUT     - Lista               /lista/:id
+// 6. DELETE  - Lista               /lista/:id
+// 7. GET     - Task                /user/:user_id/task
+// 8. GET     - Task (within list)  /user/:user_id/list/:list_id/task
+// 9. POST    - Task                /task
+// 10.PUT     - Task                /task/:id
+// 11.DELETE  - Task                /task/:id
+// 12.PUT     - Task (check)        /task/:id/done
+// 13.PUT     - Task (uncheck)      /task/:id/undone
+
+//Server response includes an "error" key with a boolean value, which
+//represents if a request was successful (false being success)
+
+//Server error response:
+//    "error":    true
+//    "message":  Error message
+//    "debug":    MySQL connection error
+
 //server configuration
 var AppBuild =    "v0.1";
-var AppPort =     8088;
+var AppPort =     8088; //port selected for testing purposes
 var DBHost =      'localhost';
 var DBUser =      'root';
 var DBPassword =  '';
@@ -14,7 +40,7 @@ var http =        require('http').Server(app);
 var mysql =       require('mysql');
 var bodyParser =  require("body-parser");
 
-//DB configuration
+//DB connection
 var connection = mysql.createConnection({
     host :     DBHost,
     user :     DBUser,
@@ -26,7 +52,7 @@ var connection = mysql.createConnection({
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-//Login endpoint - POST
+//1. Login endpoint - POST
 app.post(endpoint + '/login', function(req, res){
 
    var username = req.body.username;
@@ -50,7 +76,7 @@ app.post(endpoint + '/login', function(req, res){
    });
 });
 
-//Register endpoint - POST
+//2. Register endpoint - POST
 app.post(endpoint + '/register', function(req, res) {
 
    var username = req.body.username;
@@ -103,7 +129,7 @@ app.post(endpoint + '/register', function(req, res) {
    }
 });
 
-//Lists endpoint - GET
+//3. Lists endpoint - GET
 app.get(endpoint + '/user/:id/list/',function(req,res){
 
     var userId = req.params.id;
@@ -128,7 +154,7 @@ app.get(endpoint + '/user/:id/list/',function(req,res){
     });
 });
 
-//Lists endpoint - POST
+//4. Lists endpoint - POST
 app.post(endpoint + '/list',function(req, res) {
 
     var title =       req.body.title;
@@ -140,6 +166,7 @@ app.post(endpoint + '/list',function(req, res) {
       "error": true
     };
 
+    //Validating required fields
     if(!!title && !!description && !!createdDate && !!userId) {
         connection.query(
                         "INSERT INTO Lists (Lists.title, Lists.description, Lists.created_date, Lists.user_id) VALUES(?, ?, ?, ?)",
@@ -163,7 +190,7 @@ app.post(endpoint + '/list',function(req, res) {
     }
 });
 
-//Lists endpoint - PUT
+//5. Lists endpoint - PUT
 app.put(endpoint + '/list/:id',function(req, res) {
 
     var id =            req.params.id;
@@ -174,6 +201,7 @@ app.put(endpoint + '/list/:id',function(req, res) {
       "error": true,
     };
 
+    //Validating required fields
     if(!!id && !!title && !!description){
         connection.query("UPDATE Lists SET Lists.title=?, Lists.description=? WHERE Lists.id=?",
                          [title, description, id],
@@ -200,7 +228,7 @@ app.put(endpoint + '/list/:id',function(req, res) {
     }
 });
 
-//Lists endpoint - DELETE
+//6. Lists endpoint - DELETE
 app.delete(endpoint + '/list/:id', function(req, res){
     var id = req.params.id;
 
@@ -208,6 +236,7 @@ app.delete(endpoint + '/list/:id', function(req, res){
         "error": true,
     };
 
+    //Validating required fields
     if(!!id){
         connection.query("DELETE FROM Lists WHERE Lists.id=?",[id] ,function(err, rows) {
             if(!!err) {
@@ -228,7 +257,7 @@ app.delete(endpoint + '/list/:id', function(req, res){
     }
 });
 
-//Tasks endpoint - GET
+//7. Tasks endpoint - GET
 app.get(endpoint + '/user/:id/task/',function(req,res){
 
     var userId = req.params.id;
@@ -253,7 +282,7 @@ app.get(endpoint + '/user/:id/task/',function(req,res){
     });
 });
 
-//Tasks endpoint with List filter - GET
+//8. Tasks endpoint with List filter - GET
 app.get(endpoint + '/user/:id/list/:listId/task/',function(req,res){
 
     var userId = req.params.id;
@@ -280,7 +309,7 @@ app.get(endpoint + '/user/:id/list/:listId/task/',function(req,res){
     });
 });
 
-//Tasks endpoint - POST
+//9. Tasks endpoint - POST
 app.post(endpoint + '/task',function(req, res) {
 
     var title =       req.body.title;
@@ -294,6 +323,7 @@ app.post(endpoint + '/task',function(req, res) {
       "error": true
     };
 
+    //Validating required fields
     if(!!title && !!description && !!createdDate && !!dueDate && !!userId && !!listId) {
         connection.query(
                         "INSERT INTO Tasks (Tasks.title, Tasks.description, Tasks.created_date, Tasks.due_date, Tasks.list_id, Tasks.done) VALUES(?, ?, ?, ?, ?, 0)",
@@ -328,7 +358,7 @@ app.post(endpoint + '/task',function(req, res) {
     }
 });
 
-//Tasks endpoint - PUT
+//10. Tasks endpoint - PUT
 app.put(endpoint + '/task/:id',function(req, res) {
 
     var id =            req.params.id;
@@ -340,6 +370,7 @@ app.put(endpoint + '/task/:id',function(req, res) {
       "error": true,
     };
 
+    //Validating required fields
     if(!!id && !!title && !!description && !!dueDate){
         connection.query("UPDATE Tasks SET Tasks.title=?, Tasks.description=?, Tasks.due_date=? WHERE Tasks.id=?",
                          [title, description, dueDate, id],
@@ -366,7 +397,7 @@ app.put(endpoint + '/task/:id',function(req, res) {
     }
 });
 
-//Tasks endpoint - DELETE
+//11. Tasks endpoint - DELETE
 app.delete(endpoint + '/task/:id', function(req, res){
     var id = req.params.id;
 
@@ -374,6 +405,7 @@ app.delete(endpoint + '/task/:id', function(req, res){
         "error": true,
     };
 
+    //Validating required fields
     if(!!id){
         connection.query("DELETE FROM UserTasks WHERE UserTasks.id=?",[id] ,function(err, rows) {
             if(!!err) {
@@ -403,7 +435,7 @@ app.delete(endpoint + '/task/:id', function(req, res){
     }
 });
 
-//Tasks activate endpoint - PUT
+//12. Tasks activate endpoint - PUT
 app.put(endpoint + '/task/:id/done', function(req, res) {
 
       var id = req.params.id;
@@ -412,6 +444,7 @@ app.put(endpoint + '/task/:id/done', function(req, res) {
           "error": true,
       };
 
+      //Validating required fields
       if(!!id){
           connection.query("UPDATE Tasks SET Tasks.done=1 WHERE Tasks.id=?",
                            [id],
@@ -434,7 +467,7 @@ app.put(endpoint + '/task/:id/done', function(req, res) {
       }
 });
 
-//Tasks deactivate endpoint - PUT
+//13. Tasks deactivate endpoint - PUT
 app.put(endpoint + '/task/:id/undone', function(req, res) {
 
       var id = req.params.id;
@@ -443,6 +476,7 @@ app.put(endpoint + '/task/:id/undone', function(req, res) {
           "error": true,
       };
 
+      //Validating required fields
       if(!!id){
           connection.query("UPDATE Tasks SET Tasks.done=0 WHERE Tasks.id=?",
                            [id],

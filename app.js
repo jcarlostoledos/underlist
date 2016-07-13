@@ -245,12 +245,18 @@ app.delete(endpoint + '/task/:id', function(req, res){
 app.put(endpoint + '/task/:id/done', function(req, res) {
 
       var id = req.params.id;
+
+      var data = {
+          "error": true,
+      };
+
       if(!!id){
           connection.query("UPDATE Tasks SET Tasks.done=1 WHERE Tasks.id=?",
                            [id],
-                           function(err, rows){
+                           function(err, results){
               if(!!err) {
                   data.message = "Error updating task " + id;
+                  data.debug = err;
                   res.json(data);
               }
               else{
@@ -270,12 +276,18 @@ app.put(endpoint + '/task/:id/done', function(req, res) {
 app.put(endpoint + '/task/:id/undone', function(req, res) {
 
       var id = req.params.id;
+
+      var data = {
+          "error": true,
+      };
+
       if(!!id){
           connection.query("UPDATE Tasks SET Tasks.done=0 WHERE Tasks.id=?",
                            [id],
-                           function(err, rows){
+                           function(err, results){
               if(!!err) {
                   data.message = "Error updating task " + id;
+                  data.debug = err;
                   res.json(data);
               }
               else{

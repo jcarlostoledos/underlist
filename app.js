@@ -170,56 +170,125 @@ app.post(endpoint + '/task',function(req, res) {
     }
 });
 
-app.put(endpoint + '/task',function(req, res) {
+//Tasks endpoint - PUT
+app.put(endpoint + '/task/:id',function(req, res) {
 
-    var id =            req.body.id;
+    var id =            req.params.id;
     var title =         req.body.title;
     var description =   req.body.description;
-    var createdDate =   req.body.createdDate;
     var dueDate =       req.body.dueDate;
-    var userId =        req.body.userId;
 
     var data = {
       "error": true,
     };
 
-    if(!!id && !!title && !!description && !!createdDate && !!dueDate && !!userId){
-      //   connection.query("UPDATE book SET BookName=?, AuthorName=?, Price=? WHERE id=?",[Bookname,Authorname,Price,Id],function(err, rows, fields){
-      //       if(!!err){
-      //           data["Books"] = "Error Updating data";
-      //       }else{
-      //           data["error"] = 0;
-      //           data["Books"] = "Updated Book Successfully";
-      //       }
-      //       res.json(data);
-      //   });
+    if(!!id && !!title && !!description && !!dueDate){
+        connection.query("UPDATE Tasks SET Tasks.title=?, Tasks.description=?, Tasks.due_date=? WHERE Tasks.id=?",
+                         [title, description, dueDate, id],
+                         function(err, result){
+            if(!!err) {
+                data.message = "Error updating task " + id + " " + title + " " + description + " " + dueDate;
+                data.debug = err;
+                res.json(data);
+            }
+            else{
+                data.error = false;
+                data.message = "Updated task " + id + " successfully";
+                res.json(data);
+            }
+        });
     }
     else {
-      //   data["Books"] = "Please provide all required data (i.e : id, Bookname, Authorname, Price)";
-      //   res.json(data);
+        data.message = "Please provide all required data";
+        res.json(data);
     }
 });
 
-app.delete(endpoint + '/task',function(req,res){
-    var id = req.body.id;
+//Tasks endpoint - DELETE
+app.delete(endpoint + '/task/:id', function(req, res){
+    var id = req.params.id;
+
     var data = {
-        "error":1,
-        "tasks":""
+        "error": true,
     };
+
     if(!!id){
-      //   connection.query("DELETE FROM book WHERE id=?",[Id],function(err, rows, fields){
-      //       if(!!err){
-      //           data["Books"] = "Error deleting data";
-      //       }else{
-      //           data["error"] = 0;
-      //           data["Books"] = "Delete Book Successfully";
-      //       }
-      //       res.json(data);
-      //   });
-    }else{
-      //   data["Books"] = "Please provide all required data (i.e : id )";
-      //   res.json(data);
+        connection.query("DELETE FROM UserTasks WHERE UserTasks.id=?",[id] ,function(err, rows) {
+            if(!!err) {
+                data.message = "Error deleting task " + id;
+                data.debug = err;
+                res.json(data);
+            }
+            else {
+               connection.query("DELETE FROM Tasks WHERE Tasks.id=?",[id] ,function(err, rows) {
+                   if(!!err) {
+                       data.message = "Error deleting task " + id;
+                       data.debug = err;
+                       res.json(data);
+                   }
+                   else {
+                       data.error = false;
+                       data.message = "Deleted task " + id + " successfully";
+                       res.json(data);
+                   }
+               });
+            }
+        });
     }
+    else {
+        data.message = "Please provide all required data (i.e : id )";
+        res.json(data);
+    }
+});
+
+//Tasks activate endpoint - PUT
+app.put(endpoint + '/task/:id/done', function(req, res) {
+
+      var id = req.params.id;
+      if(!!id){
+          connection.query("UPDATE Tasks SET Tasks.done=1 WHERE Tasks.id=?",
+                           [id],
+                           function(err, rows){
+              if(!!err) {
+                  data.message = "Error updating task " + id;
+                  res.json(data);
+              }
+              else{
+                  data.error = false;
+                  data.message = "Updated task " + id + " successfully";
+                  res.json(data);
+              }
+          });
+      }
+      else {
+          data.message = "Please provide all required data";
+          res.json(data);
+      }
+});
+
+//Tasks deactivate endpoint - PUT
+app.put(endpoint + '/task/:id/undone', function(req, res) {
+
+      var id = req.params.id;
+      if(!!id){
+          connection.query("UPDATE Tasks SET Tasks.done=0 WHERE Tasks.id=?",
+                           [id],
+                           function(err, rows){
+              if(!!err) {
+                  data.message = "Error updating task " + id;
+                  res.json(data);
+              }
+              else{
+                  data.error = false;
+                  data.message = "Updated task " + id + " successfully";
+                  res.json(data);
+              }
+          });
+      }
+      else {
+          data.message = "Please provide all required data";
+          res.json(data);
+      }
 });
 
 app.get('/', function(req, res){

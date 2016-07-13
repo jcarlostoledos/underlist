@@ -101,23 +101,29 @@ app.post(endpoint + '/register', function(req, res) {
 });
 
 //Tasks endpoint - GET
-app.get(endpoint + '/tasks',function(req,res){
+app.get(endpoint + '/user/:id/task/',function(req,res){
 
-    var userId = req.body.user_id;
-    var data = {};
+    var userId = req.params.id;
+    var data = {
+        "error": true
+    };
 
-    connection.query("SELECT * from Tasks, UserTasks WHERE UserTasks.user_id = ?",[userId],function(err, rows, fields){
-        if(rows.length !== 0){
-            data.error = 0;
+    connection.query("SELECT * from Tasks, UserTasks WHERE UserTasks.user_id = ? AND UserTasks.task_id = Tasks.id",
+                     [userId],
+                     function(err, rows, fields) {
+
+        if(rows.length > 0){
+            data.error = false;
             data.tasks = rows;
             res.json(data);
         }else{
-            data.tasks = 'No tasks Found..';
+            data.tasks = 'No tasks found';
             res.json(data);
         }
     });
 });
 
+//Tasks endpoint - POST
 app.post(endpoint + '/task',function(req, res) {
 
     var title =       req.body.title;
@@ -126,35 +132,57 @@ app.post(endpoint + '/task',function(req, res) {
     var dueDate =     req.body.dueDate;
     var userId =      req.body.userId;
 
-    var data = {};
+    var data = {
+      "error": true
+    };
 
-    if(!!title && !!description && !!createdDate && !!dueDate && !!userId){
-        connection.query("INSERT INTO Tasks (Tasks.title, Tasks.description, Tasks.created_date, Tasks.due_date, Tasks.user_id) VALUES(?,?,?,?)", [Bookname,Authorname,Price],function(err, rows, fields){
-            if(!!err){
-                data["Books"] = "Error Adding data";
-            }else{
-                data["error"] = 0;
-                data["Books"] = "Book Added Successfully";
+    if(!!title && !!description && !!createdDate && !!dueDate && !!userId) {
+        connection.query(
+                        "INSERT INTO Tasks (Tasks.title, Tasks.description, Tasks.created_date, Tasks.due_date, Tasks.done) VALUES(?, ?, ?, ?, 0)",
+                        [title, description, createdDate, dueDate, userId],
+                        function(err, result) {
+
+             connection.query(
+                           "INSERT INTO UserTasks (UserTasks.user_id, UserTasks.task_id) VALUES(?, ?)",
+                           [userId, result.insertId],
+                           function(err, result) {
+                              if(!!err) {
+                                  data.message = "Error adding user task relation " + title;
+                                  data.debug = err;
+                                  res.json(data);
+                              }
+                              else{
+                                  data.error = false;
+                                  data.message = "Task " + title + " added succesfully";
+                                  res.json(data);
+                              }
+                           });
+            if(!!err) {
+                data.message = "Error adding task " + title;
+                data.debug = err;
+                res.json(data);
             }
-            res.json(data);
         });
-    }else{
-      //   data["Books"] = "Please provide all required data (i.e : Bookname, Authorname, Price)";
-      //   res.json(data);
+    }
+    else {
+        data.message = "Please provide all required data";
+        res.json(data);
     }
 });
 
-app.put(endpoint + '/task',function(req,res){
-    var id = req.body.id;
-    var title = req.body.title;
-    var description = req.body.description;
-    var createdDate = req.body.createdDate;
-    var dueDate = req.body.dueDate;
-    var userId = req.body.userId;
+app.put(endpoint + '/task',function(req, res) {
+
+    var id =            req.body.id;
+    var title =         req.body.title;
+    var description =   req.body.description;
+    var createdDate =   req.body.createdDate;
+    var dueDate =       req.body.dueDate;
+    var userId =        req.body.userId;
+
     var data = {
-        "error":1,
-        "tasks":""
+      "error": true,
     };
+
     if(!!id && !!title && !!description && !!createdDate && !!dueDate && !!userId){
       //   connection.query("UPDATE book SET BookName=?, AuthorName=?, Price=? WHERE id=?",[Bookname,Authorname,Price,Id],function(err, rows, fields){
       //       if(!!err){
@@ -165,7 +193,8 @@ app.put(endpoint + '/task',function(req,res){
       //       }
       //       res.json(data);
       //   });
-    }else{
+    }
+    else {
       //   data["Books"] = "Please provide all required data (i.e : id, Bookname, Authorname, Price)";
       //   res.json(data);
     }

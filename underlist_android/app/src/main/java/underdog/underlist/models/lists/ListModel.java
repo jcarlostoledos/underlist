@@ -5,17 +5,17 @@ package underdog.underlist.models.lists;
  */
 
 public class ListModel {
-    private int id;
+    private String id;
     private String title;
     private int user_id;
     private String description;
     private String created_date;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -13,6 +13,7 @@ import retrofit2.http.Path;
 import underdog.underlist.models.addListResponseModel;
 import underdog.underlist.models.addTaskResponseModel;
 import underdog.underlist.models.getListResponseModel;
+import underdog.underlist.models.getTasksResponseModel;
 import underdog.underlist.models.loginResponseModel;
 import underdog.underlist.models.registerResponseModel;
 import underdog.underlist.models.successResponse;
@@ -92,7 +93,7 @@ public interface Endpoints {
      * @return
      */
     @GET("user/{userId}/list/{listId}/task")
-    Call<getListResponseModel> getAllTasks(
+    Call<getTasksResponseModel> getAllTasks(
             @Path("userId") String userId,
             @Path("listId") String listId);
     /**

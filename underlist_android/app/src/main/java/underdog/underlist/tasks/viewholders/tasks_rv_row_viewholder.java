@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import underdog.underlist.R;
-import underdog.underlist.models.lists.ListModel;
+import underdog.underlist.models.task.taskEntity;
 import underdog.underlist.tasks.interfaces.TasksRowRecyclerViewOnClickListener;
 
 /**
@@ -33,7 +33,7 @@ public class tasks_rv_row_viewholder extends RecyclerView.ViewHolder{
     }
 
     public static void bind(final Context context, final tasks_rv_row_viewholder holder,
-                            final ListModel listModel,
+                            final taskEntity taskEntity,
                             final TasksRowRecyclerViewOnClickListener listener,
                             Typeface helvetica_neue_bold, Typeface helvetica_neue_regular,
                             Typeface helvetica_neue_italic){
@@ -42,9 +42,11 @@ public class tasks_rv_row_viewholder extends RecyclerView.ViewHolder{
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.onRowClicked(3, holder.getAdapterPosition());
+                    listener.onRowClicked(taskEntity.getId(), holder.getAdapterPosition());
                 }
             }
         });
+
+        holder.listName_tv.setText(taskEntity.getTitle());
     }
 }

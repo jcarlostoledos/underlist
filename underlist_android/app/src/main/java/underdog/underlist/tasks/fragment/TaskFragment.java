@@ -23,8 +23,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import underdog.underlist.AppController;
 import underdog.underlist.R;
-import underdog.underlist.models.getListResponseModel;
-import underdog.underlist.models.lists.ListModel;
+import underdog.underlist.models.getTasksResponseModel;
 import underdog.underlist.tasks.adapters.RecyclerViewTasksAdapter;
 import underdog.underlist.tasks.interfaces.TaskFragmentInterface;
 import underdog.underlist.tasks.interfaces.TasksRowRecyclerViewOnClickListener;
@@ -61,7 +60,7 @@ public class TaskFragment extends Fragment implements TaskFragmentInterface,
         app = (AppController) getActivity().getApplication();
         Retrofit retrofit = app.getRetrofit();
         endpoints = retrofit.create(Endpoints.class);
-        listId = getActivity().getIntent().getStringExtra("listId");
+        listId = app.getListId();
 
         helvetica_neue_bold = Typeface.createFromAsset(getActivity()
                         .getApplicationContext().getAssets(),
@@ -78,9 +77,6 @@ public class TaskFragment extends Fragment implements TaskFragmentInterface,
         setupRecyclerView();
         showTasks();
 
-        for(int i = 0; i < 100; i++){
-            adapter.addRow(new ListModel());
-        }
         return view;
     }
 
@@ -132,46 +128,37 @@ public class TaskFragment extends Fragment implements TaskFragmentInterface,
 
     @Override
     public void showTasks() {
-        Call<getListResponseModel> call;
+        Call<getTasksResponseModel> call;
         call = endpoints.getAllTasks(app.getUserId(), listId);
-        call.enqueue(new Callback<getListResponseModel>() {
+        call.enqueue(new Callback<getTasksResponseModel>() {
 
             @Override
-            public void onResponse(Call<getListResponseModel> call, Response<getListResponseModel> response) {
+            public void onResponse(Call<getTasksResponseModel> call, Response<getTasksResponseModel> response) {
                 if(!response.body().isError()){
-                    Toast.makeText(getActivity().getApplicationContext(), "Logged in!", Toast.LENGTH_SHORT).show();
+                    if(adapter!=null){
+                        adapter.clearAdapter();
+                        adapter.notifyDataSetChanged();
+                    }
+                    for(int i =0; i < response.body().getTasks().size(); i++){
+                        adapter.addRow(response.body().getTasks().get(i));
+                    }
                 }else{
-                    Toast.makeText(getActivity().getApplicationContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    //Todo pass error
+                    Toast.makeText(getActivity().getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
                 }
+                progress_bar.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
             }
 
             @Override
-            public void onFailure(Call<getListResponseModel> call, Throwable t) {
+            public void onFailure(Call<getTasksResponseModel> call, Throwable t) {
                 t.printStackTrace();
+                Toast.makeText(getActivity().getApplicationContext(), "Error de conexión", Toast.LENGTH_SHORT).show();
+                progress_bar.setVisibility(View.GONE);
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
 
     }
 
-/*    @Override
-    public void loginUser(String user) {
-        Call<loginResponseModel> call;
-        call = endpoints.loginUser(user);
-        call.enqueue(new Callback<loginResponseModel>() {
-
-            @Override
-            public void onResponse(Call<loginResponseModel> call, Response<loginResponseModel> response) {
-                if(!response.body().getError()){
-                    Toast.makeText(getActivity().getApplicationContext(), "Logged in!", Toast.LENGTH_SHORT).show();
-                }else{
-                    Toast.makeText(getActivity().getApplicationContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<loginResponseModel> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-    }*/
 }

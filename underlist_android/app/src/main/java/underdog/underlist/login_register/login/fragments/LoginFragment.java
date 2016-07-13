@@ -83,6 +83,7 @@ public class LoginFragment extends Fragment implements LoginInterface, View.OnCl
             @Override
             public void onFailure(Call<loginResponseModel> call, Throwable t) {
                 t.printStackTrace();
+                Toast.makeText(getActivity().getApplicationContext(), "Error de conexión", Toast.LENGTH_SHORT).show();
             }
         });
     }

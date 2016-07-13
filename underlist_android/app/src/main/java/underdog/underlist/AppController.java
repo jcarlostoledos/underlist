@@ -53,6 +53,16 @@ public class AppController extends Application {
     }
 
 
+    public String getListId(){
+        return preferences.getString("listId", "0");
+    }
+
+    public void setListId(String userId){
+        preferences.edit().putString("listId", userId).apply();
+    }
+
+
+
     public Retrofit getRetrofit() {
         return retrofit;
     }

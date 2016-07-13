@@ -126,10 +126,9 @@ public class ListsFragment extends Fragment implements ListFragmentInterface,
     }
 
     @Override
-    public void onRowClicked(int id, int rowPosition) {
-        //TODO pasar el objeto de lista
+    public void onRowClicked(String id, int rowPosition) {
+        app.setListId(id);
         Intent intent = new Intent(getActivity(), TaskActivity.class);
-        intent.putExtra("listId", id);
         startActivity(intent);
     }
 

@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import underdog.underlist.models.lists.ListModel;
-import underdog.underlist.models.recycler_items.ListRecyclerItem;
+import underdog.underlist.models.recycler_items.TaskRecyclerItem;
+import underdog.underlist.models.task.taskEntity;
 import underdog.underlist.tasks.interfaces.TasksRowRecyclerViewOnClickListener;
 import underdog.underlist.tasks.viewholders.tasks_rv_row_viewholder;
 
@@ -20,7 +20,7 @@ import underdog.underlist.tasks.viewholders.tasks_rv_row_viewholder;
  */
 public class RecyclerViewTasksAdapter extends  RecyclerView.Adapter<RecyclerView.ViewHolder>{
     private TasksRowRecyclerViewOnClickListener listener;
-    private final List<ListRecyclerItem> list;
+    private final List<TaskRecyclerItem> list;
     private final Context context;
 
 
@@ -46,20 +46,16 @@ public class RecyclerViewTasksAdapter extends  RecyclerView.Adapter<RecyclerView
     }
 
 
-    public void addRow(ListModel listModel){
-        list.add(new ListRecyclerItem<>(ListRecyclerItem.ROW, listModel));
+    public void addRow(taskEntity taskEntity){
+        list.add(new TaskRecyclerItem<>(TaskRecyclerItem.ROW, taskEntity));
         notifyItemInserted(list.size());
     }
 
-    public void addSection(ListModel listModel){
-        list.add(new ListRecyclerItem(ListRecyclerItem.SECTION, listModel));
-        notifyItemInserted(list.size());
-    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         switch (viewType){
-            case ListRecyclerItem.ROW:
+            case TaskRecyclerItem.ROW:
                 return tasks_rv_row_viewholder.create(context, viewGroup);
 
         }
@@ -69,9 +65,9 @@ public class RecyclerViewTasksAdapter extends  RecyclerView.Adapter<RecyclerView
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         switch (getItemViewType(position)){
-            case ListRecyclerItem.ROW:
+            case TaskRecyclerItem.ROW:
                 tasks_rv_row_viewholder.bind(context,(tasks_rv_row_viewholder) viewHolder,
-                        list.get(position).listModel, listener,
+                        list.get(position).taskEntity, listener,
                         helvetica_neue_bold, helvetica_neue_regular, helvetica_neue_italic);
 
                 break;

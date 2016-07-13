@@ -47,7 +47,7 @@ public class lists_rv_row_viewholder extends RecyclerView.ViewHolder{
             @Override
             public void onClick(View v) {
                 if (listener != null) {
-                    listener.onRowClicked(3, holder.getAdapterPosition());
+                    listener.onRowClicked(listModel.getId(), holder.getAdapterPosition());
                 }
             }
         });

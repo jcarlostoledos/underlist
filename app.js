@@ -60,6 +60,8 @@ app.use(function(req, res, next) {
 //1. Login endpoint - POST
 app.post(endpoint + '/login', function(req, res){
 
+   console.log("Login attempt");
+
    var username = req.body.username;
 
    var data = {};
@@ -83,6 +85,8 @@ app.post(endpoint + '/login', function(req, res){
 
 //2. Register endpoint - POST
 app.post(endpoint + '/register', function(req, res) {
+
+   console.log("Register attempt");
 
    var username = req.body.username;
    var name =     req.body.name;
@@ -220,7 +224,7 @@ app.put(endpoint + '/list/:id',function(req, res) {
                 data.message = "Error updating list " + id + " " + title + " " + description + ", NO ROWS have been affected";
                 res.json(data);
             }
-            else{
+            else {
                 data.error = false;
                 data.message = "Updated list " + id + " successfully";
                 res.json(data);
